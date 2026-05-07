@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "806419908690",
+    "project_id": "vidyarthibus-feebc",
+    "storage_bucket": "vidyarthibus-feebc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806419908690:android:8a5bd6873256898b55778b",
+        "android_client_info": {
+          "package_name": "com.keerthi.vidyarthibus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLT1vvPlWeNSR9xG_LHEBEWsOI21H-sV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
