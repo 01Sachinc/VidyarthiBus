@@ -30,6 +30,13 @@ fun NavGraph(navController: NavHostController) {
         composable(Routes.Profile.route) {
             ProfileScreen(navController = navController)
         }
+        composable(Routes.BusPass.route) {
+            BusPassScreen(navController = navController)
+        }
+        composable(Routes.Tracking.route) { backStackEntry ->
+            val routeId = backStackEntry.arguments?.getString("routeId") ?: ""
+            LiveTrackingScreen(navController = navController, routeId = routeId)
+        }
         composable(Routes.BusDetails.route) { backStackEntry ->
             val routeId = backStackEntry.arguments?.getString("routeId") ?: ""
             BusDetailsScreen(navController = navController, routeId = routeId)

@@ -11,4 +11,12 @@ sealed class Routes(val route: String) {
     }
     object Profile : Routes("profile")
     object Notifications : Routes("notifications")
+    object Tracking : Routes("tracking/{routeId}") {
+        fun createRoute(routeId: String) = "tracking/$routeId"
+    }
+    object BusPass : Routes("bus_pass")
+    object MapView : Routes("map_view")
+    object FeatureDetail : Routes("feature_detail/{featureId}") {
+        fun createRoute(featureId: String) = "feature_detail/$featureId"
+    }
 }

@@ -33,24 +33,35 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = hiltV
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Card(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Email: ${user?.email ?: "N/A"}", style = MaterialTheme.typography.bodyLarge)
-                    Text(text = "UID: ${user?.uid ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
-                }
-            }
-            Spacer(modifier = Modifier.height(32.dp))
-            Button(
-                onClick = {
-                    auth.signOut()
-                    navController.navigate(Routes.Login.route) {
-                        popUpTo(Routes.Dashboard.route) { inclusive = true }
+            if (user != null) {
+                Card(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(text = "Email: ${user.email ?: "N/A"}", style = MaterialTheme.typography.bodyLarge)
+                        Text(text = "UID: ${user.uid}", style = MaterialTheme.typography.bodySmall)
                     }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Logout")
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(
+                    onClick = {
+                        auth.signOut()
+                        navController.navigate(Routes.Login.route) {
+                            popUpTo(Routes.Dashboard.route) { inclusive = true }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Logout")
+                }
+            } else {
+                Text(text = "You are currently browsing as a Guest", style = MaterialTheme.typography.bodyLarge)
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(
+                    onClick = { navController.navigate(Routes.Login.route) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Login / Sign Up")
+                }
             }
         }
     }

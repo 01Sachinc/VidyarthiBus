@@ -1,5 +1,6 @@
 package com.keerthi.vidyarthibus.data.repository
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.keerthi.vidyarthibus.data.model.User
@@ -15,6 +16,7 @@ class AuthRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val db: FirebaseDatabase
 ) {
+    private val TAG = "AuthRepository"
     val currentUser: FirebaseUser? get() = auth.currentUser
 
     suspend fun login(email: String, pass: String): Resource<FirebaseUser> {
@@ -24,6 +26,7 @@ class AuthRepository @Inject constructor(
                 Resource.Success(it)
             } ?: Resource.Error("Login failed")
         } catch (e: Exception) {
+            Log.e(TAG, "Login Error: ${e.message}", e)
             Resource.Error(e.message ?: "An error occurred")
         }
     }
@@ -37,6 +40,7 @@ class AuthRepository @Inject constructor(
                 Resource.Success(firebaseUser)
             } ?: Resource.Error("Registration failed")
         } catch (e: Exception) {
+            Log.e(TAG, "Register Error: ${e.message}", e)
             Resource.Error(e.message ?: "An error occurred")
         }
     }

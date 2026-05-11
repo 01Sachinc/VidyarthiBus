@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
@@ -25,7 +27,9 @@ fun BusDetailsScreen(navController: NavController, routeId: String, viewModel: B
     val busState by viewModel.selectedBus.collectAsState()
     val reportState by viewModel.reportState.collectAsState()
     val context = LocalContext.current
-    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    
+    // Fallback to "Guest" if not logged in
+    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "Guest_${UUID.randomUUID().toString().take(8)}"
 
     LaunchedEffect(routeId) {
         viewModel.getBusById(routeId)
@@ -48,9 +52,41 @@ fun BusDetailsScreen(navController: NavController, routeId: String, viewModel: B
                     val bus = state.data
                     if (bus != null) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text(text = "Bus Number: ${bus.busNumber}", style = MaterialTheme.typography.headlineSmall)
-                            Text(text = "Route: ${bus.routeId}", style = MaterialTheme.typography.titleMedium)
-                            Text(text = "Last Updated: ${Date(bus.updatedAt)}", style = MaterialTheme.typography.bodySmall)
+                            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                                Text(text = bus.busNumber, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold))
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Badge(containerColor = MaterialTheme.colorScheme.primaryContainer) {
+                                    Text(bus.routeId, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                                }
+                            }
+                            Text(text = bus.routeName, style = MaterialTheme.typography.titleMedium, color = Color.Gray)
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
+                            // Info Row
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                InfoItem("Speed", "${bus.speed} km/h")
+                                InfoItem("Driver", bus.driverName)
+                                InfoItem("Rating", "⭐ ${bus.driverRating}")
+                            }
+
+                            Spacer(modifier = Modifier.height(24.dp))
+                            
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f))
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                                        Text("Next Stop:", fontWeight = FontWeight.Bold)
+                                        Text(bus.nextStop, color = MaterialTheme.colorScheme.primary)
+                                    }
+                                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                                        Text("Estimated Arrival:")
+                                        Text(bus.arrivalTime, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
                             
                             Spacer(modifier = Modifier.height(24.dp))
                             CrowdMeter(percentage = bus.crowdPercentage)
@@ -91,5 +127,13 @@ fun BusDetailsScreen(navController: NavController, routeId: String, viewModel: B
                 null -> {}
             }
         }
+    }
+}
+
+@Composable
+fun InfoItem(label: String, value: String) {
+    Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+        Text(text = label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+        Text(text = value, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
     }
 }

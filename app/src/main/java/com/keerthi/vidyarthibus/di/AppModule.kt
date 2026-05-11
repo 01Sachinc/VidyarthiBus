@@ -19,7 +19,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseDatabase(): FirebaseDatabase = FirebaseDatabase.getInstance()
+    fun provideFirebaseDatabase(): FirebaseDatabase {
+        // If your database is in a specific region, you might need to provide the URL here
+        // Example: FirebaseDatabase.getInstance("https://your-db-url.firebaseio.com/")
+        return FirebaseDatabase.getInstance()
+    }
 
     @Provides
     @Singleton
