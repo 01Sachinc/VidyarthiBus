@@ -13,8 +13,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.keerthi.vidyarthibus.ui.theme.PrimaryColor
-import com.keerthi.vidyarthibus.ui.theme.PrimaryVariant
+import com.keerthi.vidyarthibus.ui.theme.PrimaryBlue
+import com.keerthi.vidyarthibus.ui.theme.GradientEnd
 
 @Composable
 fun GradientButton(
@@ -34,7 +34,7 @@ fun GradientButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    brush = Brush.horizontalGradient(listOf(PrimaryColor, PrimaryVariant)),
+                    brush = Brush.horizontalGradient(listOf(PrimaryBlue, GradientEnd)),
                     shape = RoundedCornerShape(8.dp)
                 )
                 .padding(horizontal = 16.dp, vertical = 12.dp),

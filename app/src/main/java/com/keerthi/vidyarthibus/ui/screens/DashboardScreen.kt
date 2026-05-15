@@ -19,8 +19,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.google.firebase.auth.FirebaseAuth
 import com.keerthi.vidyarthibus.navigation.Routes
 import com.keerthi.vidyarthibus.ui.components.BusCard
@@ -45,10 +48,9 @@ fun DashboardScreen(navController: NavController, viewModel: BusViewModel = hilt
 
     val pagerState = rememberPagerState { 3 }
     
-    // Auto-scroll pager
     LaunchedEffect(Unit) {
         while(true) {
-            delay(3000)
+            delay(4000)
             val nextPage = (pagerState.currentPage + 1) % 3
             pagerState.animateScrollToPage(nextPage)
         }
@@ -57,66 +59,62 @@ fun DashboardScreen(navController: NavController, viewModel: BusViewModel = hilt
     Scaffold(
         topBar = {
             Surface(
-                color = MaterialTheme.colorScheme.primary,
-                shadowElevation = 8.dp
+                modifier = Modifier.shadow(8.dp),
+                color = MaterialTheme.colorScheme.primary
             ) {
                 Column(
                     modifier = Modifier
                         .background(
                             brush = Brush.verticalGradient(
-                                colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
+                                colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primary.copy(alpha = 0.8f))
                             )
                         )
                         .statusBarsPadding()
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 12.dp)
                 ) {
-                    // Toolbar
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
                             Text(
                                 text = "Vidyarthi-Bus",
-                                style = MaterialTheme.typography.headlineMedium.copy(
+                                style = MaterialTheme.typography.titleLarge.copy(
                                     color = Color.White,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.ExtraBold,
+                                    letterSpacing = 1.sp
                                 )
                             )
                             Text(
-                                text = if (currentUser != null) "Hello, ${currentUser.email?.split("@")?.get(0)}" else "Hello, Guest",
-                                style = MaterialTheme.typography.bodySmall.copy(color = Color.White.copy(alpha = 0.8f))
+                                text = if (currentUser != null) "Ready for class, ${currentUser.email?.split("@")?.get(0)}?" else "Browsing as Guest",
+                                style = MaterialTheme.typography.labelSmall.copy(color = Color.White.copy(alpha = 0.7f))
                             )
                         }
                         Row {
                             IconButton(onClick = { navController.navigate(Routes.Notifications.route) }) {
-                                Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = Color.White)
+                                Icon(Icons.Default.Notifications, contentDescription = null, tint = Color.White)
                             }
                             IconButton(onClick = {
-                                if (currentUser != null) {
-                                    navController.navigate(Routes.Profile.route)
-                                } else {
-                                    navController.navigate(Routes.Login.route)
-                                }
+                                if (currentUser != null) navController.navigate(Routes.Profile.route)
+                                else navController.navigate(Routes.Login.route)
                             }) {
-                                Icon(Icons.Default.Person, contentDescription = "Profile", tint = Color.White)
+                                Icon(Icons.Default.AccountCircle, contentDescription = null, tint = Color.White)
                             }
                         }
                     }
 
-                    // Search Bar
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = { viewModel.onSearchQueryChanged(it) },
-                        placeholder = { Text("Search route, city, state...", color = Color.White.copy(alpha = 0.6f)) },
+                        placeholder = { Text("Search city, route, or bus...", color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 4.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White) },
+                            .padding(horizontal = 16.dp)
+                            .height(52.dp),
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.White.copy(alpha = 0.7f)) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.White,
                             unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
@@ -128,19 +126,13 @@ fun DashboardScreen(navController: NavController, viewModel: BusViewModel = hilt
                         shape = RoundedCornerShape(12.dp)
                     )
                     
-                    // Location Suggestions
                     if (suggestions.isNotEmpty() && searchQuery.isEmpty()) {
                         LazyRow(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(suggestions) { city ->
-                                AssistChip(
-                                    onClick = { viewModel.onSearchQueryChanged(city) },
-                                    label = { Text(city, color = Color.White) },
-                                    colors = AssistChipDefaults.assistChipColors(containerColor = Color.White.copy(alpha = 0.2f)),
-                                    border = null
-                                )
+                                SuggestionChip(city) { viewModel.onSearchQueryChanged(city) }
                             }
                         }
                     }
@@ -152,50 +144,44 @@ fun DashboardScreen(navController: NavController, viewModel: BusViewModel = hilt
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface),
-            contentPadding = PaddingValues(bottom = 16.dp)
+                .background(Color(0xFFF8F9FA)),
+            contentPadding = PaddingValues(bottom = 24.dp)
         ) {
-            // Carousel Item
             item {
-                Column(modifier = Modifier.padding(vertical = 16.dp)) {
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp)
-                            .padding(horizontal = 16.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                    ) { page ->
-                        CarouselImageItem(page, navController)
-                    }
-                    
-                    Row(
-                        Modifier
-                            .height(20.dp)
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        repeat(3) { iteration ->
-                            val color = if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
-                            Box(
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .clip(CircleShape)
-                                    .background(color)
-                                    .size(8.dp)
-                            )
-                        }
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                ) { page ->
+                    PremiumBanner(page, navController)
+                }
+                
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(3) { i ->
+                        Box(
+                            modifier = Modifier
+                                .padding(3.dp)
+                                .clip(CircleShape)
+                                .background(if (pagerState.currentPage == i) MaterialTheme.colorScheme.primary else Color.LightGray)
+                                .size(6.dp)
+                        )
                     }
                 }
             }
 
-            // Quick Actions Section
             item {
                 Text(
-                    text = "Quick Services",
+                    text = "Student Essentials",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 12.dp)
                 )
                 Row(
                     modifier = Modifier
@@ -203,75 +189,88 @@ fun DashboardScreen(navController: NavController, viewModel: BusViewModel = hilt
                         .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    QuickActionItem("Live Bus", Icons.Default.DirectionsBus, Color(0xFFE3F2FD)) {
-                        // For demo, navigate to first available bus tracking
-                        if (busesState is Resource.Success) {
-                            val bus = (busesState as Resource.Success).data?.firstOrNull()
-                            if (bus != null) {
-                                navController.navigate(Routes.Tracking.createRoute(bus.routeId))
+                    ServiceItem("Live Map", Icons.Default.Map, Color(0xFFE3F2FD)) { navController.navigate(Routes.MapView.route) }
+                    ServiceItem("My Pass", Icons.Default.ConfirmationNumber, Color(0xFFF1F8E9)) { navController.navigate(Routes.BusPass.route) }
+                    ServiceItem("Premium", Icons.Default.Star, Color(0xFFFFF3E0)) { navController.navigate(Routes.Premium.route) }
+                    ServiceItem("Helpline", Icons.Default.SupportAgent, Color(0xFFF3E5F5)) { navController.navigate(Routes.Notifications.route) }
+                }
+            }
+
+            item {
+                Text(
+                    text = "Explore Services",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 12.dp)
+                )
+                
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    val rows = listOf(
+                        listOf(
+                            Triple("Safety", Icons.Default.Security, Color(0xFFFFEBEE)),
+                            Triple("Wallet", Icons.Default.AccountBalanceWallet, Color(0xFFE3F2FD)),
+                            Triple("History", Icons.Default.History, Color(0xFFF1F8E9)),
+                            Triple("Rewards", Icons.Default.CardGiftcard, Color(0xFFFFF3E0))
+                        ),
+                        listOf(
+                            Triple("News", Icons.Default.Newspaper, Color(0xFFF3E5F5)),
+                            Triple("Forum", Icons.Default.Forum, Color(0xFFE0F7FA)),
+                            Triple("Lost", Icons.Default.Search, Color(0xFFFBE9E7)),
+                            Triple("More", Icons.Default.Apps, Color(0xFFECEFF1))
+                        )
+                    )
+                    
+                    rows.forEach { row ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            row.forEach { (title, icon, color) ->
+                                ServiceItemSmall(title, icon, color) {
+                                    navController.navigate(Routes.FeatureDetail.createRoute(title.lowercase()))
+                                }
                             }
                         }
                     }
-                    QuickActionItem("Routes", Icons.Default.Map, Color(0xFFF1F8E9)) {
-                        // Open map view
-                    }
-                    QuickActionItem("Pass", Icons.Default.ConfirmationNumber, Color(0xFFFFF3E0)) {
-                        navController.navigate(Routes.BusPass.route)
-                    }
-                    QuickActionItem("More", Icons.Default.MoreHoriz, Color(0xFFF3E5F5)) { 
-                        navController.navigate(Routes.Notifications.route)
-                    }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Bus List Section
             item {
                 Text(
-                    text = if (searchQuery.isNotEmpty()) "Search Results" else "Available Buses",
+                    text = if (searchQuery.isNotEmpty()) "Search Results" else "Available Routes",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 8.dp)
                 )
             }
 
             when (val state = busesState) {
                 is Resource.Loading -> {
                     item {
-                        Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
+                        Box(modifier = Modifier.fillMaxWidth().height(300.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(strokeWidth = 3.dp)
                         }
                     }
                 }
                 is Resource.Success -> {
                     val buses = state.data ?: emptyList()
                     if (buses.isEmpty()) {
-                        item {
-                            Column(
-                                modifier = Modifier.fillMaxWidth().padding(32.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Icon(Icons.Default.SearchOff, contentDescription = null, modifier = Modifier.size(64.dp), tint = Color.LightGray)
-                                Text("No buses found", style = MaterialTheme.typography.titleMedium)
-                            }
-                        }
+                        item { EmptySearchState() }
                     } else {
                         items(buses, key = { it.routeId }) { bus ->
-                            Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
-                                BusCard(bus = bus, onClick = {
-                                    navController.navigate(Routes.BusDetails.createRoute(bus.routeId))
-                                })
+                            AnimatedVisibility(
+                                visible = true,
+                                enter = slideInVertically(initialOffsetY = { 50 }) + fadeIn()
+                            ) {
+                                Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
+                                    BusCard(bus = bus, onClick = {
+                                        navController.navigate(Routes.BusDetails.createRoute(bus.routeId))
+                                    })
+                                }
                             }
                         }
                     }
                 }
                 is Resource.Error -> {
-                    item {
-                        Text(
-                            text = state.message ?: "Error loading buses",
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
+                    item { ErrorState(state.message) }
                 }
             }
         }
@@ -279,60 +278,116 @@ fun DashboardScreen(navController: NavController, viewModel: BusViewModel = hilt
 }
 
 @Composable
-fun CarouselImageItem(page: Int, navController: NavController) {
-    val (title, sub, color) = when(page) {
-        0 -> Triple("Student Bus Pass", "Apply for academic year 2024-25", Color(0xFF6200EE))
-        1 -> Triple("Real-time Tracking", "Know exactly where your bus is", Color(0xFF03DAC6))
-        else -> Triple("Safe Travel", "Crowd monitoring for safety", Color(0xFFFF0266))
-    }
-    
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color)
-            .clickable { 
-                when(page) {
-                    0 -> navController.navigate(Routes.BusPass.route)
-                    1 -> {
-                        // For demo, go to tracking for route 101
-                        navController.navigate(Routes.Tracking.createRoute("101"))
-                    }
-                    else -> navController.navigate(Routes.Notifications.route)
-                }
-            },
-        contentAlignment = Alignment.Center
+fun SuggestionChip(text: String, onClick: () -> Unit) {
+    Surface(
+        modifier = Modifier.clickable { onClick() },
+        color = Color.White.copy(alpha = 0.15f),
+        shape = RoundedCornerShape(20.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            Text(sub, color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
-            Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = text,
+            color = Color.White,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
+
+@Composable
+fun PremiumBanner(page: Int, navController: NavController) {
+    val banners = listOf(
+        Triple("Annual Bus Pass", "Get 30% off on your college commute", "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957"),
+        Triple("Live Real-time Tracking", "Know exactly when your bus arrives", "https://images.unsplash.com/photo-1570125909232-eb263c188f7e"),
+        Triple("Premium Experience", "Exclusive AC routes & reserved seats", "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957")
+    )
+    
+    Box(modifier = Modifier.fillMaxSize()) {
+        AsyncImage(
+            model = banners[page].third,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+        Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f)))))
+        
+        Column(
+            modifier = Modifier.align(Alignment.BottomStart).padding(20.dp)
+        ) {
+            Text(banners[page].first, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(banners[page].second, color = Color.White.copy(alpha = 0.8f), fontSize = 12.sp)
+            Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = { /* Action */ },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = color),
-                shape = RoundedCornerShape(20.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
+                onClick = { navController.navigate(Routes.Premium.route) },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                modifier = Modifier.height(32.dp)
             ) {
-                Text("View Details", style = MaterialTheme.typography.labelSmall)
+                Text("Explore Now", fontSize = 10.sp)
             }
         }
     }
 }
 
 @Composable
-fun QuickActionItem(title: String, icon: ImageVector, color: Color, onClick: () -> Unit) {
+fun ServiceItem(title: String, icon: ImageVector, color: Color, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.clickable { onClick() }
     ) {
-        Box(
-            modifier = Modifier
-                .size(60.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(color),
-            contentAlignment = Alignment.Center
+        Surface(
+            modifier = Modifier.size(64.dp),
+            color = color,
+            shape = RoundedCornerShape(16.dp)
         ) {
-            Icon(icon, contentDescription = title, tint = Color.Black.copy(alpha = 0.7f))
+            Box(contentAlignment = Alignment.Center) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f), modifier = Modifier.size(28.dp))
+            }
         }
-        Text(title, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 4.dp))
+        Text(title, style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium), modifier = Modifier.padding(top = 8.dp))
+    }
+}
+
+@Composable
+fun ServiceItemSmall(title: String, icon: ImageVector, color: Color, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(70.dp).clickable { onClick() }
+    ) {
+        Surface(
+            modifier = Modifier.size(50.dp),
+            color = color,
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
+            }
+        }
+        Text(
+            text = title, 
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp), 
+            modifier = Modifier.padding(top = 4.dp),
+            maxLines = 1
+        )
+    }
+}
+
+@Composable
+fun EmptySearchState() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 60.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(Icons.Default.SearchOff, contentDescription = null, modifier = Modifier.size(80.dp), tint = Color.LightGray)
+        Spacer(modifier = Modifier.height(16.dp))
+        Text("No buses found", style = MaterialTheme.typography.titleMedium, color = Color.Gray)
+        Text("Try searching for a city or route ID", style = MaterialTheme.typography.bodySmall, color = Color.LightGray)
+    }
+}
+
+@Composable
+fun ErrorState(message: String?) {
+    Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+        Text(text = message ?: "Unexpected error", color = MaterialTheme.colorScheme.error)
     }
 }

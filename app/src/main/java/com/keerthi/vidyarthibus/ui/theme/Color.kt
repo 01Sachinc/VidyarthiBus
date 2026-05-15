@@ -2,21 +2,19 @@ package com.keerthi.vidyarthibus.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val PrimaryBlue = Color(0xFF2D62ED)
+val SecondaryBlue = Color(0xFFE8F0FE)
+val DarkGrey = Color(0xFF1C1C1E)
+val LightGrey = Color(0xFFF2F2F7)
+val Gold = Color(0xFFFFD700)
+val PremiumOrange = Color(0xFFFFA000)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val SuccessGreen = Color(0xFF34C759)
+val WarningYellow = Color(0xFFFFCC00)
+val ErrorRed = Color(0xFFFF3B30)
 
-val PrimaryColor = Color(0xFF6200EE)
-val PrimaryVariant = Color(0xFF3700B3)
-val SecondaryColor = Color(0xFF03DAC6)
-val BackgroundColor = Color(0xFFF5F5F5)
-val SurfaceColor = Color(0xFFFFFFFF)
-val ErrorColor = Color(0xFFB00020)
+val SurfaceDark = Color(0xFF121212)
+val BackgroundDark = Color(0xFF000000)
 
-val EmptyColor = Color(0xFF4CAF50)
-val SeatsAvailableColor = Color(0xFFFFC107)
-val FullColor = Color(0xFFF44336)
+val GradientStart = Color(0xFF2D62ED)
+val GradientEnd = Color(0xFF7B4DFF)

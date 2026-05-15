@@ -41,5 +41,12 @@ fun NavGraph(navController: NavHostController) {
             val routeId = backStackEntry.arguments?.getString("routeId") ?: ""
             BusDetailsScreen(navController = navController, routeId = routeId)
         }
+        composable(Routes.Premium.route) {
+            PremiumScreen(navController = navController)
+        }
+        composable(Routes.FeatureDetail.route) { backStackEntry ->
+            val featureId = backStackEntry.arguments?.getString("featureId") ?: ""
+            FeatureDetailScreen(navController = navController, featureId = featureId)
+        }
     }
 }

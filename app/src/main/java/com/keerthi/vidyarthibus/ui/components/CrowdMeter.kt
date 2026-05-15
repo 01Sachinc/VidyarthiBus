@@ -14,9 +14,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.keerthi.vidyarthibus.ui.theme.EmptyColor
-import com.keerthi.vidyarthibus.ui.theme.FullColor
-import com.keerthi.vidyarthibus.ui.theme.SeatsAvailableColor
+import com.keerthi.vidyarthibus.ui.theme.SuccessGreen
+import com.keerthi.vidyarthibus.ui.theme.ErrorRed
+import com.keerthi.vidyarthibus.ui.theme.WarningYellow
 
 @Composable
 fun CrowdMeter(percentage: Int) {
@@ -27,9 +27,9 @@ fun CrowdMeter(percentage: Int) {
     )
 
     val color = when {
-        percentage <= 30 -> EmptyColor
-        percentage <= 70 -> SeatsAvailableColor
-        else -> FullColor
+        percentage <= 30 -> SuccessGreen
+        percentage <= 70 -> WarningYellow
+        else -> ErrorRed
     }
     
     val status = when {
