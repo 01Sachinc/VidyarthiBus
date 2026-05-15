@@ -6,9 +6,24 @@
 
 ## 📱 App Screenshots
 
-| Dashboard | 3D Digital Pass | Live Tracking | Premium Services |
-| :---: | :---: | :---: | :---: |
-| <img src="screenshots/dashboard.png" width="200"> | <img src="screenshots/pass.png" width="200"> | <img src="screenshots/tracking.png" width="200"> | <img src="screenshots/premium.png" width="200"> |
+<p align="center">
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.26 AM (1).jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.26 AM.jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.27 AM (1).jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.27 AM.jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.28 AM (1).jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.28 AM.jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.29 AM.jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.33 AM.jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.35 AM.jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.36 AM (1).jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.36 AM.jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.37 AM (1).jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.37 AM (2).jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.37 AM.jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.38 AM (1).jpeg" width="150"/>
+  <img src="app/src/Screenshots 1/WhatsApp Image 2026-05-15 at 10.33.38 AM.jpeg" width="150"/>
+</p>
 
 ---
 
