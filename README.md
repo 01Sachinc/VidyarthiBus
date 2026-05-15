@@ -4,14 +4,22 @@
 
 ---
 
+## 📱 App Screenshots
+
+| Dashboard | 3D Digital Pass | Live Tracking | Premium Services |
+| :---: | :---: | :---: | :---: |
+| <img src="screenshots/dashboard.png" width="200"> | <img src="screenshots/pass.png" width="200"> | <img src="screenshots/tracking.png" width="200"> | <img src="screenshots/premium.png" width="200"> |
+
+---
+
 ## 🚀 Features
 
 - **Real-time Crowd Meter**: Instantly view the current occupancy level (Empty, Seats Available, or Full) of any college bus.
-- **Crowdsourced Reporting**: Encourages students already on board to report the current status, ensuring the data is fresh and accurate.
-- **Route Management**: Easily select and save your preferred routes for quick access.
-- **Smart Notifications**: Receive alerts for bus delays, cancellations, or when a bus is reaching full capacity.
-- **Alternative Transport**: Integrated shared auto contacts for those times when the bus is too full or delayed.
-- **Modern UI/UX**: Built with Material 3 and Jetpack Compose for a smooth, responsive, and dark-mode-ready experience.
+- **3D Digital Bus Pass**: Personalized interactive pass for students (e.g., Keerthana G K).
+- **Mega Hub (50+ Services)**: Interconnected student services including Safety, Wallet, Attendance, and more.
+- **Advanced Search**: Intelligent filtering by City, State, Country, and Route.
+- **Live Real-time Tracking**: Monitor bus location, speed, and estimated arrival times.
+- **Modern UI/UX**: Built with Material 3, Glassmorphism effects, and hardware-accelerated 3D animations.
 
 ---
 
@@ -26,7 +34,7 @@
   - Realtime Database
   - Cloud Messaging (FCM)
 - **Concurrency**: Coroutines & StateFlow
-- **Maps & Location**: Google Maps SDK & FusedLocationProviderClient
+- **Image Loading**: [Coil](https://coil-kt.github.io/coil/)
 
 ---
 
@@ -43,6 +51,7 @@ graph TD
     F --> G[Report Crowd Status]
     D --> H[Notifications]
     D --> I[Profile]
+    D --> J[Mega Feature Hub]
     G --> D
 ```
 
@@ -62,12 +71,12 @@ This project was created with ❤️ by **Sachin and team**.
    ```
 2. **Open in Android Studio**:
    Import the project and let Gradle sync.
-3. **Firebase Configuration**:
+3. **Screenshots**:
+   To see images in the README, create a `screenshots/` folder in the root directory and add your captured app images as `dashboard.png`, `pass.png`, `tracking.png`, and `premium.png`.
+4. **Firebase Configuration**:
    - Create a Firebase project and add your `google-services.json` to the `app/` directory.
    - Enable Email/Password Authentication.
-   - Set up Realtime Database with the rules provided in the documentation.
-4. **Google Maps**:
-   - Add your Google Maps API Key in `AndroidManifest.xml`.
+   - Set up Realtime Database.
 
 ---
 *Developed to bridge the communication gap for students in remote areas.*
